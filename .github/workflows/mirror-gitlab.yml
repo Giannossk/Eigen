@@ -1,0 +1,25 @@
+name: Mirror from GitLab
+
+on:
+  # run at 00:00 UTC every Sunday
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout mirror
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch from GitLab upstream
+        run: |
+          git remote add upstream https://gitlab.com/libeigen/eigen.git
+          git fetch upstream --prune
+
+      - name: Push to GitHub
+        run: |
+          git push origin --mirror
